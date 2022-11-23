@@ -87,6 +87,17 @@ export const App = () => {
         })
     }
 
+    const changeTaskTitle = (taskId: string, newTitle: string, todolistId: string) => {
+        const newTasks = {
+            ...tasks, [todolistId]: tasks[todolistId].map((elem) => elem.id === taskId ? {...elem, title: newTitle} : elem)
+        }
+        setTasks(newTasks)
+    }
+
+    const changeTodolistTitle = (newTitle: string, todolistId: string) => {
+        setTodolists(todolists.map(elem => elem.id === todolistId ? {...elem, title: newTitle} : elem))
+    }
+
     return (
         <div className="App">
             <AddItemForm addItem={addTodolist}/>
@@ -109,6 +120,8 @@ export const App = () => {
                     changeFilter={changeFilter}
                     addTask={addTask}
                     changeTaskStatus={changeStatus}
+                    changeTaskTitle={changeTaskTitle}
+                    changeTodolistTitle={changeTodolistTitle}
                     removeTodolist={removeTodolist}
                     filter={tl.filter}
                 />
