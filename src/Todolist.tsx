@@ -2,7 +2,7 @@ import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 import {FilterValuesType} from "./App";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
-import {Button, IconButton} from "@mui/material";
+import {Button, Checkbox, IconButton} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 
 export type TaskType = {
@@ -50,7 +50,7 @@ export const Todolist = (props: PropsType) => {
                 </IconButton>
             </h3>
             <AddItemForm addItem={addTask}/>
-            <ul>
+            <div>
                 {props.tasks.map(t => {
                     const onRemoveHandler = () => props.removeTask(t.id, props.id)
                     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -60,20 +60,20 @@ export const Todolist = (props: PropsType) => {
                         props.changeTaskTitle(t.id, newTitle, props.id)
                     }
 
-                    return <li key={t.id} className={t.isDone ? 'is-done' : ''}>
-                        <input type={'checkbox'}
+                    return <div key={t.id} className={t.isDone ? 'is-done' : ''}>
+                        <Checkbox
                                checked={t.isDone}
                                onChange={onChangeHandler}/>
                         <EditableSpan title={t.title} onChange={onChangeTitleHandler}/>
                         <IconButton aria-label="delete" onClick={onRemoveHandler}>
                             <Delete />
                         </IconButton>
-                    </li>
+                    </div>
                 })}
-            </ul>
+            </div>
             <div>
                 <Button variant={props.filter === 'all' ? 'contained' : 'text'}
-                        onClick={onAllClickHandler}>All
+                        onClick={onAllClickHandler} color={'inherit'}>All
                 </Button>
                 <Button variant={props.filter === 'active' ? 'contained' : 'text'}
                         onClick={onActiveClickHandler} color={'primary'}>Active
