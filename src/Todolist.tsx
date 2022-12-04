@@ -5,7 +5,7 @@ import {EditableSpan} from "./EditableSpan";
 import {Button, IconButton} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 import {useDispatch, useSelector} from "react-redux";
-import {AppRootState} from "./state/store";
+import {AppRootStateType} from "./state/store";
 import {addTaskAC} from "./state/tasks-reducer";
 import {Task} from './Task'
 
@@ -27,7 +27,7 @@ type PropsType = {
 export const Todolist = React.memo((props: PropsType) => {
 
     const dispatch = useDispatch();
-    const tasks = useSelector<AppRootState, TaskType[]>(state => state.tasks[props.id]);
+    const tasks = useSelector<AppRootStateType, TaskType[]>(state => state.tasks[props.id]);
 
     const onAllClickHandler = useCallback(() => props.changeFilter('all', props.id), [props.changeFilter, props.id])
     const onActiveClickHandler = useCallback(() => props.changeFilter('active', props.id), [props.changeFilter, props.id])
