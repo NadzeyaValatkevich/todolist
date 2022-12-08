@@ -18,16 +18,29 @@ export type TodolistType = {
     addedDate:string,
     order: number
 };
+export enum TaskStatuses {
+    New,
+    InProgress,
+    Completed,
+    Droft
+};
+export enum TaskPriorities {
+    Low,
+    Middle,
+    H1,
+    Urgently,
+    Laten
+};
 
 export type TaskType = {
     description: string | null,
     title: string,
-    status: number,
-    priority: number,
+    status: TaskStatuses,
+    priority: TaskPriorities,
     startDate: string | null,
     deadline: string | null,
     id: string,
-    todoListId: string,
+    todolistId: string,
     order: number,
     addedDate: string
 };
