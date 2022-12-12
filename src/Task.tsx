@@ -1,4 +1,7 @@
-import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "./state/tasks-reducer";
+import {
+    removeTaskTC,
+    updateTaskTC
+} from "./state/tasks-reducer";
 import React, {ChangeEvent, useCallback} from "react";
 import {Checkbox, IconButton} from "@mui/material";
 import {EditableSpan} from "./EditableSpan";
@@ -8,28 +11,28 @@ import {TaskStatuses, TaskType} from "./api/todolists-api";
 
 type TaskPropsType = {
     task: TaskType
-    todolistId: string
+    todoListId: string
 };
 
 export const Task = React.memo((props: TaskPropsType) => {
     const dispatch = useDispatch()
-    const onRemoveHandler = () => dispatch(removeTaskAC(props.task.id, props.todolistId))
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        dispatch(changeTaskStatusAC(
+    const onRemoveTaskHandler = () => dispatch<any>(removeTaskTC(props.todoListId, props.task.id))
+    const onChangeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        dispatch<any>(updateTaskTC(
+            props.todoListId,
             props.task.id,
-            props.todolistId,
-            e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New))
+            {status: e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New}))
     }
     const onChangeTitleHandler = useCallback((newTitle: string) => {
-        dispatch(changeTaskTitleAC(props.task.id, props.todolistId, newTitle))
-    }, [props.task.id, props.todolistId, changeTaskTitleAC])
+        dispatch<any>(updateTaskTC(props.todoListId, props.task.id, {title:newTitle}))
+    }, [props.task.id, props.todoListId, updateTaskTC])
 
     return <div key={props.task.id} className={props.task.status === TaskStatuses.Completed ? 'is-done' : ''}>
         <Checkbox
             checked={props.task.status === TaskStatuses.Completed}
-            onChange={onChangeHandler}/>
+            onChange={onChangeStatusHandler}/>
         <EditableSpan title={props.task.title} onChange={onChangeTitleHandler}/>
-        <IconButton aria-label="delete" onClick={onRemoveHandler}>
+        <IconButton aria-label="delete" onClick={onRemoveTaskHandler}>
             <Delete/>
         </IconButton>
     </div>

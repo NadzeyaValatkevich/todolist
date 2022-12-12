@@ -4,15 +4,15 @@ import {AddItemForm} from "./AddItemForm";
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@mui/material";
 import {Menu} from "@mui/icons-material";
 import {
-    addTodolistAC,
-    changeTodolistFilterAC,
-    changeTodolistTitleAC, fetchTodolistsTC, FilterValuesType,
-    removeTodolistAC, TodolistDomainType,
+    createTodoListTC,
+    changeTodoListFilterAC,
+    changeTodoListTitleAC, fetchTodoListsTC, FilterValuesType,
+    removeTodoListTC, TodoListDomainType, changeTodoListTitleTC,
 } from "./state/todolists-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./state/store";
 import {TaskType} from "./api/todolists-api";
-import {Todolist} from "./Todolist";
+import {TodoList} from "./Todolist";
 
 export type TasksStateType = {
     [key: string]: TaskType[]
@@ -21,26 +21,26 @@ export type TasksStateType = {
 export const AppWithRedux = () => {
 
     const dispatch = useDispatch();
-    const todolists = useSelector<AppRootStateType, TodolistDomainType[]>(state => state.todolists);
+    const todoLists = useSelector<AppRootStateType, TodoListDomainType[]>(state => state.todoLists);
 
     useEffect(() => {
-        dispatch<any>(fetchTodolistsTC())
+        dispatch<any>(fetchTodoListsTC())
     }, []);
 
-    const removeTodolist = useCallback((todolistId: string) => {
-        dispatch(removeTodolistAC(todolistId))
+    const removeTodoList = useCallback((todoListId: string) => {
+        dispatch<any>(removeTodoListTC(todoListId))
     }, [dispatch]);
 
-    const addTodolist = useCallback((title: string) => {
-        dispatch(addTodolistAC(title))
+    const addTodoList = useCallback((title: string) => {
+        dispatch<any>(createTodoListTC(title))
     }, [dispatch]);
 
-    const changeTodolistTitle = useCallback((todolistId: string, title: string) => {
-        dispatch(changeTodolistTitleAC(todolistId, title))
+    const changeTodoListTitle = useCallback((todoListId: string, title: string) => {
+        dispatch<any>(changeTodoListTitleTC(title, todoListId))
     }, [dispatch]);
 
-    const changeFilter = useCallback((value: FilterValuesType, todolistId: string) => {
-        dispatch(changeTodolistFilterAC(todolistId, value))
+    const changeFilter = useCallback((value: FilterValuesType, todoListId: string) => {
+        dispatch(changeTodoListFilterAC(todoListId, value))
     }, [dispatch]);
 
     return (
@@ -64,20 +64,20 @@ export const AppWithRedux = () => {
             </AppBar>
             <Container>
                 <Grid container style={{padding: '10px'}}>
-                    <AddItemForm addItem={addTodolist}/>
+                    <AddItemForm addItem={addTodoList}/>
                 </Grid>
                 <Grid container spacing={3}>
-                    {todolists.map(tl => {
+                    {todoLists.map(tl => {
 
                         return <Grid item>
                             <Paper style={{padding: '10px'}}>
-                                <Todolist
+                                <TodoList
                                     key={tl.id}
                                     id={tl.id}
                                     title={tl.title}
                                     changeFilter={changeFilter}
-                                    changeTodolistTitle={changeTodolistTitle}
-                                    removeTodolist={removeTodolist}
+                                    changeTodoListTitle={changeTodoListTitle}
+                                    removeTodoList={removeTodoList}
                                     filter={tl.filter}
                                 />
                             </Paper>
