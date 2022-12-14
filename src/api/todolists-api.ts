@@ -12,61 +12,6 @@ const instance = axios.create({
     ...settings
 })
 
-export type TodoListType = {
-    id:string,
-    title:string,
-    addedDate:string,
-    order: number
-};
-export enum TaskStatuses {
-    New,
-    InProgress,
-    Completed,
-    Droft
-};
-export enum TaskPriorities {
-    Low,
-    Middle,
-    H1,
-    Urgently,
-    Laten
-};
-
-export type TaskType = {
-    description: string | null,
-    title: string,
-    status: TaskStatuses,
-    priority: TaskPriorities,
-    startDate: string | null,
-    deadline: string | null,
-    id: string,
-    todoListId: string,
-    order: number,
-    addedDate: string
-};
-
-type ResponseType<D = {}> = {
-    resultCode: number,
-    messages: string[],
-    fieldsErrors: string[],
-    data: D
-};
-
-type GetTasksResponseType = {
-    totalCount: number,
-    error: string | null,
-    items: TaskType[]
-};
-
-export type UpdateTaskModelType = {
-    title: string,
-    description: string | null,
-    status: number,
-    priority: number,
-    startDate: string | null,
-    deadline: string | null
-};
-
 export const todoListsApi = {
     getTodoLists() {
         return (instance.get<TodoListType[]>('todo-lists'))
@@ -92,5 +37,55 @@ export const todoListsApi = {
     updateTask(todoListId: string, taskId: string, model:UpdateTaskModelType) {
         return(instance.put(`todo-lists/${todoListId}/tasks/${taskId}`, model))
     },
+};
 
+export type TodoListType = {
+    id:string,
+    title:string,
+    addedDate:string,
+    order: number
+};
+export enum TaskStatuses {
+    New,
+    InProgress,
+    Completed,
+    Droft
+};
+export enum TaskPriorities {
+    Low,
+    Middle,
+    H1,
+    Urgently,
+    Laten
+};
+export type TaskType = {
+    description: string | null,
+    title: string,
+    status: TaskStatuses,
+    priority: TaskPriorities,
+    startDate: string | null,
+    deadline: string | null,
+    id: string,
+    todoListId: string,
+    order: number,
+    addedDate: string
+};
+type ResponseType<D = {}> = {
+    resultCode: number,
+    messages: string[],
+    fieldsErrors: string[],
+    data: D
+};
+type GetTasksResponseType = {
+    totalCount: number,
+    error: string | null,
+    items: TaskType[]
+};
+export type UpdateTaskModelType = {
+    title: string,
+    description: string | null,
+    status: number,
+    priority: number,
+    startDate: string | null,
+    deadline: string | null
 };

@@ -10,8 +10,8 @@ let todoListId1: string;
 let todoListId2: string;
 let startState: TodoListDomainType[];
 beforeEach(() => {
-    const todoListId1 = v1();
-    const todoListId2 = v1();
+    todoListId1 = v1();
+    todoListId2 = v1();
     startState = [
         {id: todoListId1, title: 'What to learn', filter: 'all', addedDate: "", order: 0},
         {id: todoListId2, title: 'What to buy', filter: 'all', addedDate: "", order: 1}
@@ -64,6 +64,5 @@ test('correct filter of todolist should be changed', () => {
 test('todolists should be set to the state', () => {
 
     const endState = todoListsReducer([], setTodoListsAC(startState));
-
     expect(endState.length).toBe(2);
 });
