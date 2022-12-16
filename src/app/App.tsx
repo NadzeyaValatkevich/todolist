@@ -1,15 +1,19 @@
 import React from 'react';
 import '../App.css';
-import {AppBar, Button, Container, IconButton, Toolbar, Typography} from "@mui/material";
+import {AppBar, Button, Container, IconButton, LinearProgress, Toolbar, Typography} from "@mui/material";
 import {Menu} from "@mui/icons-material";
 import {TaskType} from "../api/todolists-api";
 import {TodoListsList} from "../features/TodolistsList/TodolistsList";
+import {ErrorSnackBar} from "../components/ErrorSnackBar/ErrorSnackBar";
+import {useSelector} from "react-redux";
+import {AppRootStateType} from "./store";
 
 export type TasksStateType = {
     [key: string]: TaskType[]
 };
 
 export const App = () => {
+    const status = useSelector<AppRootStateType, 'idle' | 'loading' | 'succeeded' | 'failed'>(state => state.app.status)
 
     return (
         <div className="App">
@@ -29,10 +33,12 @@ export const App = () => {
                     </Typography>
                     <Button color="inherit">Login</Button>
                 </Toolbar>
+                { status === 'loading' && <LinearProgress />}
             </AppBar>
             <Container>
                 <TodoListsList/>
             </Container>
+            <ErrorSnackBar/>
         </div>
     )
 };

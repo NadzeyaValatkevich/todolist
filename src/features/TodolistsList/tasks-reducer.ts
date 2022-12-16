@@ -6,6 +6,7 @@ import {
 } from "./todolists-reducer";
 import {TaskType, todoListsApi, UpdateTaskModelType} from "../../api/todolists-api";
 import {AppRootStateType, AppThunk} from "../../app/store";
+import {setErrorAC, setStatusAC} from "../../app/app-reducer";
 
 const initialState: TasksStateType = {};
 
@@ -22,7 +23,7 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Tasks
                     .map(t => t.id === action.taskId ? {...t, ...action.model} : t)
             }
         case 'ADD-TODOLIST':
-            return { [action.todoList.id]: [], ...state }
+            return {[action.todoList.id]: [], ...state}
         case 'REMOVE-TODOLIST':
             const stateCopy = {...state}
             delete stateCopy[action.id]
@@ -33,7 +34,8 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Tasks
                 copyState[tl.id] = [];
             })
             return copyState;
-        };
+        }
+            ;
         case 'SET-TASKS':
             return {...state, [action.todoListId]: action.tasks}
         default:
@@ -66,24 +68,37 @@ export const setTasksAC = (todoListId: string, tasks: TaskType[]) =>
 
 // thunks
 export const fetchTasksTC = (todoListId: string): AppThunk => (dispatch) => {
-        todoListsApi.getTasks(todoListId)
-            .then(res => {
-                dispatch(setTasksAC(todoListId, res.data.items))
-            })
+    dispatch(setStatusAC('loading'))
+    todoListsApi.getTasks(todoListId)
+        .then(res => {
+            dispatch(setTasksAC(todoListId, res.data.items))
+            dispatch(setStatusAC('succeeded'))
+        })
 };
 
 export const removeTaskTC = (todoListId: string, taskId: string): AppThunk => (dispatch) => {
-        todoListsApi.deleteTask(todoListId, taskId)
-            .then(res => {
-                dispatch(removeTaskAC(taskId, todoListId))
-            })
+    todoListsApi.deleteTask(todoListId, taskId)
+        .then(res => {
+            dispatch(removeTaskAC(taskId, todoListId))
+        })
 };
 
 export const addTaskTC = (todoListId: string, title: string): AppThunk => (dispatch) => {
-        todoListsApi.createTask(todoListId, title)
-            .then(res => {
-                dispatch(addTaskAC(res.data.data.item))
-            })
+    dispatch(setStatusAC('loading'))
+    todoListsApi.createTask(todoListId, title)
+        .then(res => {
+            if (res.data.resultCode === 0) {
+                dispatch(addTaskAC(res.data.data.item));
+                dispatch(setStatusAC('succeeded'))
+            } else {
+                if (res.data.messages.length) {
+                    dispatch(setErrorAC(res.data.messages[0]));
+                } else {
+                    dispatch(setErrorAC('Some error occurred'));
+                }
+                dispatch(setStatusAC('failed'))
+            }
+        })
 };
 
 export const updateTaskTC = (todoListId: string, taskId: string, domainModal: UpdateDomainTaskModelType): AppThunk => {
@@ -93,7 +108,8 @@ export const updateTaskTC = (todoListId: string, taskId: string, domainModal: Up
         if (!task) {
             console.warn('task not found in the state');
             return
-        };
+        }
+        ;
         const appModel: UpdateTaskModelType = {
             title: task.title,
             description: task.description,
