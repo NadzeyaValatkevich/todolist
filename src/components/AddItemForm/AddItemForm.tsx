@@ -3,10 +3,11 @@ import {Button, IconButton, TextField} from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
 type AddItemFormPropsType = {
-    addItem: (title: string) => void
+    addItem: (title: string) => void,
+    disabled?: boolean
 }
 
-export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
+export const AddItemForm = React.memo(({addItem, disabled = false}: AddItemFormPropsType) => {
     const [title, setNewTaskTitle] = useState('')
     const [error, setError] = useState<string | null>(null)
 
@@ -19,14 +20,14 @@ export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
             setError(null)
         }
         if (e.charCode === 13) {
-            props.addItem(title)
+            addItem(title)
             setNewTaskTitle('')
         }
     }
 
     const addTask = () => {
         if (title.trim() !== '') {
-            props.addItem(title)
+            addItem(title)
             setNewTaskTitle('')
         } else {
             setError('Title is required')
@@ -35,6 +36,7 @@ export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
 
     return <div>
         <TextField
+            disabled={disabled}
             variant={'outlined'}
             label={'Type value'}
             value={title}
@@ -43,7 +45,7 @@ export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
             error={!!error}
             helperText={error}
         />
-        <IconButton onClick={addTask} color={'primary'}>
+        <IconButton onClick={addTask} color={'primary'} disabled={disabled}>
             <AddCircleOutlineIcon/>
         </IconButton>
     </div>

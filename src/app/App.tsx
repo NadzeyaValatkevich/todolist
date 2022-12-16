@@ -11,8 +11,11 @@ import {AppRootStateType} from "./store";
 export type TasksStateType = {
     [key: string]: TaskType[]
 };
+type AppPropsType = {
+    demo?: boolean
+};
 
-export const App = () => {
+export const App = ({demo = false}: AppPropsType) => {
     const status = useSelector<AppRootStateType, 'idle' | 'loading' | 'succeeded' | 'failed'>(state => state.app.status)
 
     return (
@@ -36,7 +39,7 @@ export const App = () => {
                 { status === 'loading' && <LinearProgress />}
             </AppBar>
             <Container>
-                <TodoListsList/>
+                <TodoListsList demo={demo}/>
             </Container>
             <ErrorSnackBar/>
         </div>

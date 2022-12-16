@@ -15,6 +15,9 @@ export const todoListsReducer = (state: TodoListDomainType[] = initialState, act
         case 'CHANGE-TODOLIST-FILTER': {
             return state.map(tl => tl.id === action.todoListId ? {...tl, filter: action.filter} : tl)
         }
+        case 'CHANGE-TODOLIST-ENTITY-STATUS': {
+            return state.map(tl => tl.id === action.todoListId ? {...tl, entityStatus: action.entityStatus} : tl)
+        }
         case 'SET-TODOLISTS':
             return action.todoLists.map(tl => ({...tl, filter: 'all', entityStatus: 'idle'}))
         default:
@@ -39,6 +42,8 @@ export const changeTodoListFilterAC = (todoListId: string, filter: FilterValuesT
 
     } as const);
 export const setTodoListsAC = (todoLists: TodoListType[]) => ({type: 'SET-TODOLISTS', todoLists} as const);
+export const changeTodoListEntityStatusAC = (todoListId: string, entityStatus: 'idle' | 'loading' | 'succeeded' | 'failed') => (
+    {type: 'CHANGE-TODOLIST-ENTITY-STATUS', todoListId, entityStatus} as const);
 
 
 // thunks
@@ -52,9 +57,12 @@ export const fetchTodoListsTC = (): AppThunk => (dispatch) => {
 };
 
 export const removeTodoListTC = (todoListId: string): AppThunk => (dispatch) => {
+    dispatch(setStatusAC('loading'))
+    dispatch(changeTodoListEntityStatusAC(todoListId, 'loading'))
     todoListsApi.deleteTodoList(todoListId)
         .then(res => {
             dispatch(removeTodoListAC(todoListId))
+            dispatch(setStatusAC('succeeded'))
         })
 };
 
@@ -86,9 +94,11 @@ export type AddTodoListActionType = ReturnType<typeof addTodoListAC>;
 export type ChangeTodoListTitleActionType = ReturnType<typeof changeTodoListTitleAC>;
 export type ChangeTodoListFilterActionType = ReturnType<typeof changeTodoListFilterAC>;
 export type SetTodoListsActionType = ReturnType<typeof setTodoListsAC>;
+export type ChangeTodoListEntityStatusActionType = ReturnType<typeof changeTodoListEntityStatusAC>;
 
 export type TodoListsActionsType = RemoveTodoListActionType
     | AddTodoListActionType
     | ChangeTodoListTitleActionType
     | ChangeTodoListFilterActionType
-    | SetTodoListsActionType;
+    | SetTodoListsActionType
+    | ChangeTodoListEntityStatusActionType;
