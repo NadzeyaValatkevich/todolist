@@ -7,6 +7,7 @@ import {
 import {TaskType, todoListsApi, UpdateTaskModelType} from "../../api/todolists-api";
 import {AppRootStateType, AppThunk} from "../../app/store";
 import {setErrorAC, setStatusAC} from "../../app/app-reducer";
+import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
 
 const initialState: TasksStateType = {};
 
@@ -91,13 +92,11 @@ export const addTaskTC = (todoListId: string, title: string): AppThunk => (dispa
                 dispatch(addTaskAC(res.data.data.item));
                 dispatch(setStatusAC('succeeded'))
             } else {
-                if (res.data.messages.length) {
-                    dispatch(setErrorAC(res.data.messages[0]));
-                } else {
-                    dispatch(setErrorAC('Some error occurred'));
-                }
-                dispatch(setStatusAC('failed'))
+                handleServerAppError(res.data, dispatch)
             }
+        })
+        .catch(error => {
+            handleServerNetworkError(error, dispatch)
         })
 };
 
@@ -119,9 +118,18 @@ export const updateTaskTC = (todoListId: string, taskId: string, domainModal: Up
             deadline: task.startDate,
             ...domainModal
         }
+        dispatch(setStatusAC('loading'))
         todoListsApi.updateTask(todoListId, taskId, appModel)
             .then(res => {
-                dispatch(updateTaskAC(taskId, todoListId, domainModal))
+                if(res.data.resultCode === 0) {
+                    dispatch(updateTaskAC(taskId, todoListId, domainModal))
+                    dispatch(setStatusAC('succeeded'))
+                } else {
+                    handleServerAppError(res.data, dispatch)
+                }
+            })
+            .catch(error => {
+                handleServerNetworkError(error, dispatch)
             })
     }
 };

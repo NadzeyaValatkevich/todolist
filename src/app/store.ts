@@ -4,15 +4,17 @@ import {TasksActionsType, tasksReducer} from "../features/TodolistsList/tasks-re
 import {legacy_createStore as createStore} from 'redux'
 import thunk, {ThunkAction} from "redux-thunk";
 import {ActionsType, appReducer} from "./app-reducer";
+import {AuthActionsType, authReducer} from "../features/Login/auth-reducer";
 
 const rootReducer = combineReducers({
     todoLists: todoListsReducer,
     tasks: tasksReducer,
-    app: appReducer
+    app: appReducer,
+    auth: authReducer
 });
 
 export type AppRootStateType = ReturnType<typeof rootReducer>;
-export type AppActionsType = TodoListsActionsType | TasksActionsType | ActionsType;
+export type AppActionsType = TodoListsActionsType | TasksActionsType | ActionsType | AuthActionsType;
 export type AppThunk<ReturnType = void> = ThunkAction<
     ReturnType,
     AppRootStateType,
