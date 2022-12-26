@@ -14,11 +14,11 @@ import {AddItemForm} from "../../components/AddItemForm/AddItemForm";
 import {TodoList} from "./Todolist";
 import {Navigate} from "react-router-dom";
 
-type TodoListsListPropstype = {
+type TodoListsListPropsType = {
     demo?: boolean
 };
 
-export const TodoListsList: React.FC<TodoListsListPropstype> = ({demo = false}) => {
+export const TodoListsList: React.FC<TodoListsListPropsType> = ({demo = false}) => {
     const dispatch = useDispatch();
     const todoLists = useSelector<AppRootStateType, TodoListDomainType[]>(state => state.todoLists);
     const isLoggedIn = useSelector<AppRootStateType,boolean>(state => state.auth.isLoggedIn)
