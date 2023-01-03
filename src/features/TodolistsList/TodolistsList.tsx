@@ -41,8 +41,8 @@ export const TodoListsList: React.FC<TodoListsListPropsType> = ({demo = false}) 
         dispatch<any>(changeTodoListTitleTC(title, todoListId))
     }, [dispatch]);
 
-    const changeFilter = useCallback((value: FilterValuesType, todoListId: string) => {
-        dispatch(changeTodoListFilterAC(todoListId, value))
+    const changeFilter = useCallback((filter: FilterValuesType, todoListId: string) => {
+        dispatch(changeTodoListFilterAC(todoListId, filter))
     }, [dispatch]);
 
     if(!isLoggedIn) {
