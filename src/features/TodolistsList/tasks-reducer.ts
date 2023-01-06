@@ -24,8 +24,8 @@ const slice = createSlice( {
                 tasks.splice(index, 1)
             }
         },
-        addTaskAC(state, action: PayloadAction<{task: TaskType}>) {
-            state[action.payload.task.todoListId].unshift(action.payload.task)
+        addTaskAC(state, action: PayloadAction<TaskType>) {
+            state[action.payload.todoListId].unshift(action.payload)
         },
         updateTaskAC(state, action: PayloadAction<{taskId: string, todoListId: string, model: UpdateDomainTaskModelType}>) {
             const tasks = state[action.payload.todoListId];
@@ -78,7 +78,7 @@ export const addTaskTC = (todoListId: string, title: string): AppThunk => (dispa
     todoListsApi.createTask(todoListId, title)
         .then(res => {
             if (res.data.resultCode === 0) {
-                dispatch(addTaskAC({task: res.data.data.item}));
+                dispatch(addTaskAC(res.data.data.item));
                 dispatch(setStatusAC({status: 'succeeded'}))
             } else {
                 handleServerAppError(res.data, dispatch)

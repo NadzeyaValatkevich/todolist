@@ -16,7 +16,7 @@ import {TodoListsList} from "../features/TodolistsList/TodolistsList";
 import {ErrorSnackBar} from "../components/ErrorSnackBar/ErrorSnackBar";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./store";
-import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import {Login} from "../features/Login/Login";
 import {initializeAppTC} from "./app-reducer";
 import {logoutTC} from "../features/Login/auth-reducer";
@@ -43,44 +43,42 @@ export const App = ({demo = false}: AppPropsType) => {
         dispatch<any>(logoutTC())
     }, []);
 
-    if(!isInitialized) {
+    if (!isInitialized) {
         return <div
-            style = {{position: 'fixed', top: '50%', textAlign: 'center', width: '100%'}}
+            style={{position: 'fixed', top: '50%', textAlign: 'center', width: '100%'}}
         >
             <CircularProgress/>
         </div>
-    };
+    }
+    ;
 
     return (
-        <BrowserRouter>
-            <div className="App">
-                <AppBar position="static">
-                    <Toolbar>
-                        <IconButton
-                            size="large"
-                            edge="start"
-                            color="inherit"
-                            aria-label="menu"
-                            sx={{mr: 2}}
-                        >
-                            <Menu/>
-                        </IconButton>
-                        <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
-                            News
-                        </Typography>
-                        {isLoggedIn && <Button color="inherit" onClick={logoutHandler}>Log out</Button>}
-                    </Toolbar>
-                    {status === 'loading' && <LinearProgress/>}
-                </AppBar>
-                <Container>
-                    <Routes>
-                        <Route path={'/'} element={<TodoListsList demo={demo}/>}/>
-                        <Route path={'/login'} element={<Login/>}/>
-                    </Routes>
-
-                </Container>
-                <ErrorSnackBar/>
-            </div>
-        </BrowserRouter>
+        <div className="App">
+            <AppBar position="static">
+                <Toolbar>
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{mr: 2}}
+                    >
+                        <Menu/>
+                    </IconButton>
+                    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+                        News
+                    </Typography>
+                    {isLoggedIn && <Button color="inherit" onClick={logoutHandler}>Log out</Button>}
+                </Toolbar>
+                {status === 'loading' && <LinearProgress/>}
+            </AppBar>
+            <Container>
+                <Routes>
+                    <Route path={'/'} element={<TodoListsList demo={demo}/>}/>
+                    <Route path={'/login'} element={<Login/>}/>
+                </Routes>
+            </Container>
+            <ErrorSnackBar/>
+        </div>
     )
 };

@@ -13,6 +13,8 @@ const rootReducer = combineReducers({
     auth: authReducer
 });
 
+export type RootReducerType = typeof rootReducer;
+
 export type AppRootStateType = ReturnType<typeof rootReducer>;
 // export type AppActionsType = TodoListsActionsType | TasksActionsType | ActionsType;
 export type AppThunk<ReturnType = void> = ThunkAction<
