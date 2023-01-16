@@ -1,5 +1,5 @@
 import {
-    removeTaskTC,
+    removeTask,
     updateTaskTC
 } from "../../tasks-reducer";
 import React, {ChangeEvent, useCallback} from "react";
@@ -15,8 +15,10 @@ type TaskPropsType = {
 };
 
 export const Task = React.memo((props: TaskPropsType) => {
-    const dispatch = useDispatch()
-    const onRemoveTaskHandler = () => dispatch<any>(removeTaskTC(props.todoListId, props.task.id))
+    const dispatch = useDispatch();
+    const onRemoveTaskHandler = () => {
+        dispatch<any>(removeTask( {props.todoListId, props.task.id}))
+    }
     const onChangeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
         dispatch<any>(updateTaskTC(
             props.todoListId,
