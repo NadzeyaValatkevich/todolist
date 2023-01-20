@@ -2,11 +2,10 @@ import React, {useCallback, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../../app/store";
 import {
-    changeTodoListFilterAC,
-    changeTodoListTitleTC,
-    createTodoListTC,
-    fetchTodoListsTC, FilterValuesType,
-    removeTodoListTC,
+    changeTodoListFilterAC, changeTodoListTitleTC,
+    createTodoList,
+    fetchTodoLists,
+    FilterValuesType,
     TodoListDomainType
 } from "./todolists-reducer";
 import {Grid, Paper} from "@mui/material";
@@ -25,20 +24,20 @@ export const TodoListsList: React.FC<TodoListsListPropsType> = ({demo = false}) 
 
     useEffect(() => {
         if(!demo || isLoggedIn) {
-            dispatch<any>(fetchTodoListsTC())
+            dispatch<any>(fetchTodoLists())
         }
     }, []);
 
     const removeTodoList = useCallback((todoListId: string) => {
-        dispatch<any>(removeTodoListTC(todoListId))
+        dispatch<any>(removeTodoList(todoListId))
     }, [dispatch]);
 
     const addTodoList = useCallback((title: string) => {
-        dispatch<any>(createTodoListTC(title))
+        dispatch<any>(createTodoList(title))
     }, [dispatch]);
 
     const changeTodoListTitle = useCallback((todoListId: string, title: string) => {
-        dispatch<any>(changeTodoListTitleTC(title, todoListId))
+        dispatch<any>(changeTodoListTitleTC({title, todoListId}))
     }, [dispatch]);
 
     const changeFilter = useCallback((filter: FilterValuesType, todoListId: string) => {

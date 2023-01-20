@@ -1,6 +1,6 @@
 import {
     removeTask,
-    updateTaskTC
+    updateTask
 } from "../../tasks-reducer";
 import React, {ChangeEvent, useCallback} from "react";
 import {Checkbox, IconButton} from "@mui/material";
@@ -17,16 +17,16 @@ type TaskPropsType = {
 export const Task = React.memo((props: TaskPropsType) => {
     const dispatch = useDispatch();
     const onRemoveTaskHandler = () => {
-        dispatch<any>(removeTask( {props.todoListId, props.task.id}))
+        dispatch<any>(removeTask( {todoListId: props.todoListId, taskId: props.task.id}))
     }
     const onChangeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        dispatch<any>(updateTaskTC(
-            props.todoListId,
-            props.task.id,
-            {status: e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New}))
+        dispatch<any>(updateTask({
+            todoListId: props.todoListId,
+            taskId: props.task.id,
+            domainModel: {status: e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New}}))
     }
     const onChangeTitleHandler = useCallback((newTitle: string) => {
-        dispatch<any>(updateTaskTC(props.todoListId, props.task.id, {title:newTitle}))
+        dispatch<any>(updateTask({todoListId: props.todoListId, taskId: props.task.id, domainModel: {title:newTitle}}))
     }, [dispatch, props.task.id, props.todoListId])
 
     return <div key={props.task.id} className={props.task.status === TaskStatuses.Completed ? 'is-done' : ''}>

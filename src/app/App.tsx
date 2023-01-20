@@ -18,8 +18,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./store";
 import {Route, Routes} from "react-router-dom";
 import {Login} from "../features/Login/Login";
-import {initializeAppTC} from "./app-reducer";
-import {logoutTC} from "../features/Login/auth-reducer";
+// import {initializeAppTC} from "./app-reducer";
+import {logout} from "../features/Login/auth-reducer";
+import {initializeApp} from "./app-reducer";
 
 export type TasksStateType = {
     [key: string]: TaskType[]
@@ -36,11 +37,11 @@ export const App = ({demo = false}: AppPropsType) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch<any>(initializeAppTC())
+        dispatch<any>(initializeApp())
     }, []);
 
     const logoutHandler = useCallback(() => {
-        dispatch<any>(logoutTC())
+        dispatch<any>(logout())
     }, []);
 
     if (!isInitialized) {
@@ -49,9 +50,7 @@ export const App = ({demo = false}: AppPropsType) => {
         >
             <CircularProgress/>
         </div>
-    }
-    ;
-
+    };
     return (
         <div className="App">
             <AppBar position="static">
