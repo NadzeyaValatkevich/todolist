@@ -15,12 +15,12 @@ import {TaskType} from "../api/todolists-api";
 import {TodoListsList} from "../features/TodolistsList/TodolistsList";
 import {ErrorSnackBar} from "../components/ErrorSnackBar/ErrorSnackBar";
 import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "./store";
 import {Route, Routes} from "react-router-dom";
-import {Login} from "../features/Login/Login";
-// import {initializeAppTC} from "./app-reducer";
-import {logout} from "../features/Login/auth-reducer";
+import {Login} from "../features/Auth/Login";
+import {logout} from "../features/Auth/auth-reducer";
 import {initializeApp} from "./app-reducer";
+import {selectIsInitialized, selectStatus} from "./selectors";
+import {authSelectors} from "../features/Auth";
 
 export type TasksStateType = {
     [key: string]: TaskType[]
@@ -30,9 +30,10 @@ type AppPropsType = {
 };
 
 export const App = ({demo = false}: AppPropsType) => {
-    const status = useSelector<AppRootStateType, 'idle' | 'loading' | 'succeeded' | 'failed'>(state => state.app.status);
-    const isInitialized = useSelector<AppRootStateType, boolean>(state => state.app.isInitialized);
-    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
+
+    const status = useSelector(selectStatus);
+    const isInitialized = useSelector(selectIsInitialized)
+    const isLoggedIn = useSelector(authSelectors.selectIsLoggedIn)
 
     const dispatch = useDispatch();
 

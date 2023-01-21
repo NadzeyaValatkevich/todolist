@@ -1,6 +1,6 @@
 import {TasksStateType} from "../../app/App";
 import {addTaskTC, fetchTasks, removeTask, tasksReducer, updateTask} from "./tasks-reducer";
-import {addTodoListAC, fetchTodoLists, removeTodoList} from "./todolists-reducer";
+import {createTodoList, fetchTodoLists, removeTodoList} from "./todoLists-reducer";
 import {TaskPriorities, TaskStatuses} from "../../api/todolists-api";
 
 let startState: TasksStateType = {};
@@ -92,12 +92,13 @@ test('title of specified task should be changed', () => {
 });
 
 test('new property with new array should be added when new todolist is added', () => {
-    const action = addTodoListAC({todoList: {
+    const todoList = {
         id: 'id exist',
         title: 'title no matter',
         addedDate: '',
         order: 0
-    }});
+    };
+    const action = createTodoList.fulfilled({todoList: todoList}, 'requestId', todoList.title);
     const endState = tasksReducer(startState, action);
 
     const keys = Object.keys(endState);

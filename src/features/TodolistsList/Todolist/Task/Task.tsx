@@ -1,13 +1,12 @@
-import {
-    removeTask,
-    updateTask
-} from "../../tasks-reducer";
 import React, {ChangeEvent, useCallback} from "react";
 import {Checkbox, IconButton} from "@mui/material";
 import {EditableSpan} from "../../../../components/EditableSpan/EditableSpan";
 import {Delete} from "@mui/icons-material";
 import {useDispatch} from "react-redux";
 import {TaskStatuses, TaskType} from "../../../../api/todolists-api";
+import {bindActionCreators} from "redux";
+import {tasksActions} from "../../index";
+import {useActions} from "../../../../app/store";
 
 type TaskPropsType = {
     task: TaskType
@@ -16,18 +15,23 @@ type TaskPropsType = {
 
 export const Task = React.memo((props: TaskPropsType) => {
     const dispatch = useDispatch();
+    const {removeTask, updateTask} = useActions(tasksActions);
+
     const onRemoveTaskHandler = () => {
-        dispatch<any>(removeTask( {todoListId: props.todoListId, taskId: props.task.id}))
-    }
+        removeTask({todoListId: props.todoListId, taskId: props.task.id})
+    };
+
     const onChangeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        dispatch<any>(updateTask({
+        updateTask({
             todoListId: props.todoListId,
             taskId: props.task.id,
-            domainModel: {status: e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New}}))
-    }
+            domainModel: {status: e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New}
+        })
+    };
+
     const onChangeTitleHandler = useCallback((newTitle: string) => {
-        dispatch<any>(updateTask({todoListId: props.todoListId, taskId: props.task.id, domainModel: {title:newTitle}}))
-    }, [dispatch, props.task.id, props.todoListId])
+        updateTask({todoListId: props.todoListId, taskId: props.task.id, domainModel: {title: newTitle}})
+    }, [dispatch, props.task.id, props.todoListId]);
 
     return <div key={props.task.id} className={props.task.status === TaskStatuses.Completed ? 'is-done' : ''}>
         <Checkbox
@@ -38,5 +42,4 @@ export const Task = React.memo((props: TaskPropsType) => {
             <Delete/>
         </IconButton>
     </div>
-
 })
