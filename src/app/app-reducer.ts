@@ -1,8 +1,6 @@
 import {authApi} from "../api/todolists-api";
-import {login, setIsLoggedInAC} from "../features/Auth/auth-reducer";
-import {Dispatch} from "redux";
+import {setIsLoggedInAC} from "../features/Auth/auth-reducer";
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
 
 type InitialStateType = {
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
@@ -10,12 +8,16 @@ type InitialStateType = {
     isInitialized: boolean
 };
 
-export const initializeApp = createAsyncThunk('app/initializeApp', async (param, {dispatch}) => {
+const initializeApp = createAsyncThunk('app/initializeApp', async (param, {dispatch}) => {
     const res = await authApi.me();
     if (res.data.resultCode === 0) {
         dispatch(setIsLoggedInAC({value: true}))
     }
-})
+});
+
+export const asyncActions = {
+    initializeApp
+};
 
 const slice = createSlice({
     name: 'app',

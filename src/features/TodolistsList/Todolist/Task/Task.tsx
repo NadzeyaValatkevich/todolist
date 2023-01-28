@@ -14,24 +14,23 @@ type TaskPropsType = {
 };
 
 export const Task = React.memo((props: TaskPropsType) => {
-    const dispatch = useDispatch();
     const {removeTask, updateTask} = useActions(tasksActions);
 
-    const onRemoveTaskHandler = () => {
+    const onRemoveTaskHandler = useCallback(() => {
         removeTask({todoListId: props.todoListId, taskId: props.task.id})
-    };
+    }, [props.task.id, props.todoListId]);
 
-    const onChangeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    const onChangeStatusHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         updateTask({
             todoListId: props.todoListId,
             taskId: props.task.id,
             domainModel: {status: e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New}
         })
-    };
+    }, [props.task.id, props.todoListId]);
 
     const onChangeTitleHandler = useCallback((newTitle: string) => {
         updateTask({todoListId: props.todoListId, taskId: props.task.id, domainModel: {title: newTitle}})
-    }, [dispatch, props.task.id, props.todoListId]);
+    }, [props.task.id, props.todoListId]);
 
     return <div key={props.task.id} className={props.task.status === TaskStatuses.Completed ? 'is-done' : ''}>
         <Checkbox

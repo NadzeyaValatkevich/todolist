@@ -1,7 +1,8 @@
 import {TasksStateType} from "../../app/App";
-import {addTaskTC, fetchTasks, removeTask, tasksReducer, updateTask} from "./tasks-reducer";
-import {createTodoList, fetchTodoLists, removeTodoList} from "./todoLists-reducer";
 import {TaskPriorities, TaskStatuses} from "../../api/todolists-api";
+import {addTask, fetchTasks, removeTask, updateTask} from "./tasks-reducer";
+import {tasksReducer} from "./tasks-reducer";
+import {createTodoList, fetchTodoLists, removeTodoList} from "./todoLists-reducer";
 
 let startState: TasksStateType = {};
 beforeEach(() => {
@@ -60,7 +61,7 @@ test('correct task should be added to correct array', () => {
         id: 'id exist'
     };
 
-    const action = addTaskTC.fulfilled(task, 'requestId', {todoListId: task.todoListId, title: task.title});
+    const action = addTask.fulfilled(task, 'requestId', {todoListId: task.todoListId, title: task.title});
 
     const endState = tasksReducer(startState, action);
 

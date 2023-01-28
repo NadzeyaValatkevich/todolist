@@ -13,6 +13,7 @@ import {login} from "./auth-reducer";
 import {useAppDispatch} from "../../app/store";
 import {Navigate} from 'react-router-dom';
 import {selectIsLoggedIn} from "./selectors";
+import {authActions} from "./index";
 
 type FormValuesType = {
     email: string
@@ -41,7 +42,7 @@ export const Login = () => {
             return errors
         },
         onSubmit: async (values: FormValuesType, formikHelpers:FormikHelpers<FormValuesType>) => {
-            const action = await dispatch<any>(login(values));
+            const action = await dispatch<any>(authActions.login(values));
 
             if(login.rejected.match(action)) {
                 if(action.payload?.fieldsErrors?.length) {

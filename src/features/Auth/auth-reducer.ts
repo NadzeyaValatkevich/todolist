@@ -37,9 +37,14 @@ export const logout = createAsyncThunk('auth/logout', async (param, thunkAPI) =>
         handleServerNetworkError(error, thunkAPI.dispatch)
         return thunkAPI.rejectWithValue({})
     }
-})
+});
 
-const slice = createSlice({
+export const asyncActions = {
+    login,
+    logout
+};
+
+export const slice = createSlice({
     name: 'auth',
     initialState: {
         isLoggedIn: false

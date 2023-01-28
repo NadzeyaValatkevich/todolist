@@ -12,13 +12,13 @@ import {
 } from "@mui/material";
 import {Menu} from "@mui/icons-material";
 import {TaskType} from "../api/todolists-api";
-import {TodoListsList} from "../features/TodolistsList/TodolistsList";
+import {TodoListsList} from "../features/TodolistsList";
 import {ErrorSnackBar} from "../components/ErrorSnackBar/ErrorSnackBar";
 import {useDispatch, useSelector} from "react-redux";
 import {Route, Routes} from "react-router-dom";
-import {Login} from "../features/Auth/Login";
+import {Login} from "../features/Auth";
 import {logout} from "../features/Auth/auth-reducer";
-import {initializeApp} from "./app-reducer";
+import {asyncActions} from "./app-reducer";
 import {selectIsInitialized, selectStatus} from "./selectors";
 import {authSelectors} from "../features/Auth";
 
@@ -38,7 +38,7 @@ export const App = ({demo = false}: AppPropsType) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch<any>(initializeApp())
+        dispatch<any>(asyncActions.initializeApp())
     }, []);
 
     const logoutHandler = useCallback(() => {

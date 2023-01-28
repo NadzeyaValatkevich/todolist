@@ -6,6 +6,7 @@ import {BrowserRouterDecorator, reduxStoreProviderDecorator} from "../stories/Re
 export default {
     title: 'App Component',
     component: App,
+    // decorators: [reduxStoreProviderDecorator],
     decorators: [reduxStoreProviderDecorator, BrowserRouterDecorator],
 } as unknown as ComponentMeta<typeof App>;
 
