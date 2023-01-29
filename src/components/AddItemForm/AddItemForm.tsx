@@ -3,7 +3,7 @@ import {Button, IconButton, TextField} from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
 type AddItemFormPropsType = {
-    addItem: (title: string) => void,
+    addItem: (title: string) => Promise<any>,
     disabled?: boolean
 }
 
@@ -23,16 +23,20 @@ export const AddItemForm = React.memo(({addItem, disabled = false}: AddItemFormP
             addItem(title)
             setNewTaskTitle('')
         }
-    }
+    };
 
-    const addTask = () => {
+    const addTask = async () => {
         if (title.trim() !== '') {
-            addItem(title)
-            setNewTaskTitle('')
+            try {
+                await addItem(title);
+                setNewTaskTitle('')
+            } catch (error: any) {
+                setError(error)
+            }
         } else {
             setError('Title is required')
         }
-    }
+    };
 
     return <div>
         <TextField
@@ -45,7 +49,7 @@ export const AddItemForm = React.memo(({addItem, disabled = false}: AddItemFormP
             error={!!error}
             helperText={error}
         />
-        <IconButton onClick={addTask} color={'primary'} disabled={disabled}>
+        <IconButton onClick={addTask} color={'primary'} disabled={disabled} style={{marginLeft: '5px'}}>
             <AddCircleOutlineIcon/>
         </IconButton>
     </div>

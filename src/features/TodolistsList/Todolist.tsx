@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect} from "react";
 import {AddItemForm} from "../../components/AddItemForm/AddItemForm";
 import {EditableSpan} from "../../components/EditableSpan/EditableSpan";
-import {Button, IconButton, PropTypes} from "@mui/material";
+import {Button, IconButton, Paper, PropTypes} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 import {useSelector} from "react-redux";
 import {AppRootStateType, useActions} from "../../app/store";
@@ -41,9 +41,9 @@ export const TodoList = React.memo(({demo = false, ...props}: PropsType) => {
         changeTodoListTitle({title: newTitle, todoListId: props.todoList.id})
     }, [props.todoList.id])
 
-    const addTaskCallback = useCallback((title: string) => {
+    const addTaskCallback = useCallback(async (title: string) => {
         addTask({todoListId: props.todoList.id, title})
-    }, [props.todoList.id])
+    }, [props.todoList.id]);
 
     let tasksForTodoList = tasks;
     if (props.todoList.filter === 'completed') {
@@ -66,14 +66,16 @@ export const TodoList = React.memo(({demo = false, ...props}: PropsType) => {
     // };
 
     return (
-        <div>
+        <Paper style={{padding: '10px', position: 'relative'}}>
+            <IconButton aria-label="delete"
+                        onClick={removeTodoListHandler}
+                        disabled={props.todoList.entityStatus === 'loading'}
+                        style={{position: 'absolute', right: '5px', top: '5px'}}
+            >
+                <Delete/>
+            </IconButton>
             <h3>
                 <EditableSpan title={props.todoList.title} onChange={onChangeTodoListTitle}/>
-                <IconButton aria-label="delete"
-                            onClick={removeTodoListHandler}
-                            disabled={props.todoList.entityStatus === 'loading'}>
-                    <Delete/>
-                </IconButton>
             </h3>
             <AddItemForm addItem={addTaskCallback}
                          disabled={props.todoList.entityStatus === 'loading'}
@@ -84,6 +86,7 @@ export const TodoList = React.memo(({demo = false, ...props}: PropsType) => {
                     task={t}
                     todoListId={props.todoList.id}
                 />)}
+                {!tasksForTodoList.length && <div style={{padding: '10px', color: 'gray'}}>No tasks</div>}
             </div>
             <div>
                 <Button variant={props.todoList.filter === 'all' ? 'contained' : 'text'}
@@ -99,6 +102,6 @@ export const TodoList = React.memo(({demo = false, ...props}: PropsType) => {
                 {/*{renderFilterButton('active', 'primary', 'Active')}*/}
                 {/*{renderFilterButton('completed', 'secondary', 'Completed')}*/}
             </div>
-        </div>
+        </Paper>
     )
 })

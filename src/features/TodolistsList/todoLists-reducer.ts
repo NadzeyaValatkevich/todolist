@@ -1,7 +1,7 @@
 import {todoListsApi, TodoListType} from "../../api/todolists-api";
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {setStatusAC} from "../../app/app-reducer";
-import {handleServerNetworkError} from "../../utils/error-utils";
+import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
 
 export const fetchTodoLists = createAsyncThunk('todoLists/fetchTodoLists', async (param, {
     dispatch,
@@ -26,11 +26,21 @@ export const removeTodoList = createAsyncThunk('todoLists/removeTodoList', async
     return {todoListId}
 });
 
-export const createTodoList = createAsyncThunk('todoLists/createTodoList', async (title: string, {dispatch}) => {
+export const createTodoList = createAsyncThunk('todoLists/createTodoList', async (title: string, {dispatch, rejectWithValue}) => {
     dispatch(setStatusAC({status: 'loading'}))
-    const res = await todoListsApi.createTodoLists(title)
-    dispatch(setStatusAC({status: 'succeeded'}))
-    return {todoList: res.data.data.item}
+    try {
+        const res = await todoListsApi.createTodoLists(title)
+        if(res.data.resultCode === 0) {
+            dispatch(setStatusAC({status: 'succeeded'}))
+            return {todoList: res.data.data.item}
+        } else {
+            handleServerAppError(res.data, dispatch)
+            return rejectWithValue(null)
+        }
+    } catch (error: any) {
+        handleServerNetworkError(error, dispatch)
+        return rejectWithValue(null)
+    }
 });
 
 export const changeTodoListTitle = createAsyncThunk('todoLists/changeTodoListTitle', async (param: {title: string, todoListId: string}, {dispatch}) => {
