@@ -11,16 +11,18 @@ import {
     Typography
 } from "@mui/material";
 import {Menu} from "@mui/icons-material";
-import {TaskType} from "../api/todolists-api";
 import {TodoListsList} from "../features/TodolistsList";
 import {ErrorSnackBar} from "../components/ErrorSnackBar/ErrorSnackBar";
 import {useDispatch, useSelector} from "react-redux";
 import {Route, Routes} from "react-router-dom";
 import {Login} from "../features/Auth";
-import {logout} from "../features/Auth/auth-reducer";
-import {asyncActions} from "./app-reducer";
-import {selectIsInitialized, selectStatus} from "./selectors";
+import {authActions} from "../features/Auth";
+import {asyncActions} from "../features/Application/application-reducer";
+import {selectIsInitialized, selectStatus} from "../features/Application/selectors";
 import {authSelectors} from "../features/Auth";
+import {TaskType} from "../api/types";
+import {useActions} from "../utils/redux-utils";
+import {appActions} from "../features/Application";
 
 export type TasksStateType = {
     [key: string]: TaskType[]
@@ -32,18 +34,15 @@ type AppPropsType = {
 export const App = ({demo = false}: AppPropsType) => {
 
     const status = useSelector(selectStatus);
-    const isInitialized = useSelector(selectIsInitialized)
-    const isLoggedIn = useSelector(authSelectors.selectIsLoggedIn)
+    const isInitialized = useSelector(selectIsInitialized);
+    const isLoggedIn = useSelector(authSelectors.selectIsLoggedIn);
 
-    const dispatch = useDispatch();
+    const {logout} = useActions(authActions);
+    const {initializeApp} = useActions(appActions);
 
-    useEffect(() => {
-        dispatch<any>(asyncActions.initializeApp())
-    }, []);
+    useEffect(() => {initializeApp()}, []);
 
-    const logoutHandler = useCallback(() => {
-        dispatch<any>(logout())
-    }, []);
+    const logoutHandler = useCallback(() => {logout()}, []);
 
     if (!isInitialized) {
         return <div

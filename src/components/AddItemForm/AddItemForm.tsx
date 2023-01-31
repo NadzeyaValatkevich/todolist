@@ -1,40 +1,37 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
-import {Button, IconButton, TextField} from "@mui/material";
+import {IconButton, TextField} from "@mui/material";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
+export type AddItemFormSubmitHelperType = {setError: (error: string) => void, setTitle: (title: string) => void};
 type AddItemFormPropsType = {
-    addItem: (title: string) => Promise<any>,
+    addItem: (title: string, helpers: {setError: (error: string) => void, setTitle: (title: string) => void}) => void,
     disabled?: boolean
-}
+};
 
 export const AddItemForm = React.memo(({addItem, disabled = false}: AddItemFormPropsType) => {
-    const [title, setNewTaskTitle] = useState('')
-    const [error, setError] = useState<string | null>(null)
+    const [title, setTitle] = useState('');
+    const [error, setError] = useState<string | null>(null);
+
+    const addTask = async () => {
+        if (title.trim() !== '') {
+            addItem(title, {setError, setTitle});
+        } else {
+            setError('Title is required')
+        }
+    };
 
     const onNewTitleChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setNewTaskTitle(e.currentTarget.value)
-    }
+        setTitle(e.currentTarget.value)
+    };
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if(error !== null) {
             setError(null)
         }
         if (e.charCode === 13) {
-            addItem(title)
-            setNewTaskTitle('')
-        }
-    };
-
-    const addTask = async () => {
-        if (title.trim() !== '') {
-            try {
-                await addItem(title);
-                setNewTaskTitle('')
-            } catch (error: any) {
-                setError(error)
-            }
-        } else {
-            setError('Title is required')
+            addTask()
+            // addItem(title)
+            // setTitle('')
         }
     };
 

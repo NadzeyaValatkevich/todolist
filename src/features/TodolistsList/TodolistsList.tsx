@@ -1,13 +1,14 @@
 import React, {useCallback, useEffect} from "react";
 import {useSelector} from "react-redux";
-import {AppRootStateType, useActions} from "../../app/store";
 import {TodoListDomainType} from "./todoLists-reducer";
-import {Grid, Paper} from "@mui/material";
-import {AddItemForm} from "../../components/AddItemForm/AddItemForm";
+import {Grid} from "@mui/material";
+import {AddItemForm, AddItemFormSubmitHelperType} from "../../components/AddItemForm/AddItemForm";
 import {TodoList} from "./Todolist";
 import {Navigate} from "react-router-dom";
 import {selectIsLoggedIn} from "../Auth/selectors";
 import {todoListsActions} from "./index";
+import {AppRootStateType} from "../../utils/types";
+import {useActions, useAppDispatch} from "../../utils/redux-utils";
 
 type TodoListsListPropsType = {
     demo?: boolean
@@ -16,14 +17,27 @@ type TodoListsListPropsType = {
 export const TodoListsList: React.FC<TodoListsListPropsType> = ({demo = false}) => {
     const todoLists = useSelector<AppRootStateType, TodoListDomainType[]>(state => state.todoLists);
     const isLoggedIn = useSelector(selectIsLoggedIn);
-    const {createTodoList, fetchTodoLists} = useActions(todoListsActions)
+    const {fetchTodoLists} = useActions(todoListsActions);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         if(!demo || isLoggedIn) {fetchTodoLists()}
     }, []);
 
-    const addTodoListCallback = useCallback(async (title: string) => {
-        createTodoList(title)
+    const addTodoListCallback = useCallback(async (title: string, helper: AddItemFormSubmitHelperType) => {
+        const thunk = todoListsActions.createTodoList(title)
+        const resultAction = await dispatch(thunk);
+
+        if (todoListsActions.createTodoList.rejected.match(resultAction)) {
+            if (resultAction.payload?.errors?.length) {
+                const errorMessage = resultAction.payload?.errors[0];
+                helper.setError(errorMessage)
+            } else {
+                helper.setError('Some error occured')
+            }
+        } else {
+            helper.setTitle('')
+        }
     }, []);
 
     // const removeTodoListHandler = useCallback((todoListId: string) => {

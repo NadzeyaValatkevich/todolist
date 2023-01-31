@@ -2,7 +2,7 @@ import {ComponentMeta, ComponentStory} from "@storybook/react";
 import React from "react";
 import {Task} from "./Task";
 import {reduxStoreProviderDecorator} from "../../../../stories/ReduxStoreProviderDecorator";
-import {TaskPriorities, TaskStatuses} from "../../../../api/todolists-api";
+import {TaskPriorities, TaskStatuses} from "../../../../api/types";
 
 export default {
     title: 'Task Component',

@@ -1,8 +1,11 @@
 import {TasksStateType} from "../../app/App";
-import {TaskPriorities, TaskStatuses} from "../../api/todolists-api";
-import {addTask, fetchTasks, removeTask, updateTask} from "./tasks-reducer";
-import {tasksReducer} from "./tasks-reducer";
-import {createTodoList, fetchTodoLists, removeTodoList} from "./todoLists-reducer";
+import {asyncActions as todoListsAsyncActions} from "./todoLists-reducer";
+import { slice,  asyncActions} from "./tasks-reducer";
+import {TaskPriorities, TaskStatuses} from "../../api/types";
+
+const {reducer: tasksReducer} = slice;
+const {addTask, fetchTasks, removeTask, updateTask} = asyncActions;
+const {createTodoList, removeTodoList, fetchTodoLists} = todoListsAsyncActions;
 
 let startState: TasksStateType = {};
 beforeEach(() => {
@@ -126,7 +129,7 @@ test('empty arrays should be added when we set todoLists', () => {
             {id: '1', title: 'What to learn', addedDate: "", order: 0},
             {id: '2', title: 'What to buy', addedDate: "", order: 1}
         ]};
-    const action = fetchTodoLists.fulfilled(payload, 'requestId');
+    const action = fetchTodoLists.fulfilled(payload, 'requestId', undefined);
     const endState = tasksReducer({}, action);
 
     const keys = Object.keys(endState);
